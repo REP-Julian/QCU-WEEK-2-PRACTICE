@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lesson Management System</title>
+  <link rel="stylesheet" href="lesson-manager.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <nav class="navbar">
+    <div class="nav-content">
+      <h1 class="nav-title">📚 Lesson Manager</h1>
+      <div class="nav-links">
+        <button class="nav-link profile-btn" id="profileBtn">👤 Profile</button>
+        <button class="nav-link logout-btn" id="logoutBtn">🚪 Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="header">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" id="totalClasses">0</span>
+          <span class="stat-label">Class Codes</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="totalLessons">0</span>
+          <span class="stat-label">Total Lessons</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="completedLessons">0</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn create-btn" id="createClassBtn">➕ New Class Code</button>
+      <button class="btn import-btn" id="importBtn">📥 Import Files</button>
+      <input type="file" id="fileInput" accept=".pdf,.ppt,.pptx,.doc,.docx" multiple style="display: none;">
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search classes or lessons...">
+        <div class="search-filters">
+          <select id="statusFilter">
+            <option value="all">All Status</option>
+            <option value="not-started">Not Started</option>
+            <option value="in-progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="classes-container" id="classesContainer">
+      <!-- Class cards will be inserted here -->
+    </div>
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📚</div>
+      <h3>No Classes Found</h3>
+      <p>Create your first class code to start organizing lessons.</p>
+      <button class="btn create-btn" onclick="openCreateClassModal()">Create Class Code</button>
+    </div>
+  </main>
+
+  <!-- Create Class Modal -->
+  <div class="modal-overlay" id="createClassModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Create New Class Code</h2>
+        <button class="close-btn" id="closeCreateModal">×</button>
+      </div>
+      <form class="form" id="createClassForm">
+        <div class="field">
+          <label for="className">Class Name</label>
+          <input type="text" id="className" name="className" required placeholder="e.g., Web Development 101">
+        </div>
+        <div class="field">
+          <label for="classCode">Class Code</label>
+          <input type="text" id="classCode" name="classCode" required placeholder="e.g., WD101">
+        </div>
+        <div class="field">
+          <label for="classDescription">Description</label>
+          <textarea id="classDescription" name="classDescription" placeholder="Brief description of the class..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn cancel-btn" id="cancelCreateClass">Cancel</button>
+          <button type="submit" class="btn save-btn">Create Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Create Lesson Modal -->
+  <div class="modal-overlay" id="createLessonModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Add New Lesson</h2>
+        <button class="close-btn" id="closeCreateLessonModal">×</button>
+      </div>
+      <form class="form" id="createLessonForm">
+        <input type="hidden" id="lessonClassId">
+        <div class="field">
+          <label for="lessonTitle">Lesson Title</label>
+          <input type="text" id="lessonTitle" name="lessonTitle" required placeholder="e.g., Introduction to HTML">
+        </div>
+        <div class="field">
+          <label for="lessonContent">Lesson Content</label>
+          <textarea id="lessonContent" name="lessonContent" required placeholder="Enter lesson content..."></textarea>
+        </div>
+        <div class="field">
+          <label for="lessonDuration">Duration (minutes)</label>
+          <input type="number" id="lessonDuration" name="lessonDuration" min="1" placeholder="60">
+        </div>
+        <div class="field">
+          <label for="lessonOrder">Lesson Order</label>
+          <input type="number" id="lessonOrder" name="lessonOrder" min="1" placeholder="1">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn cancel-btn" id="cancelCreateLesson">Cancel</button>
+          <button type="submit" class="btn save-btn">Add Lesson</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Lesson Modal -->
+  <div class="modal-overlay" id="viewLessonModal">
+    <div class="modal large">
+      <div class="modal-header">
+        <h2 id="viewLessonTitle">Lesson Title</h2>
+        <div class="lesson-controls">
+          <button class="btn status-btn" id="toggleStatusBtn">Mark Complete</button>
+          <button class="close-btn" id="closeViewLessonModal">×</button>
+        </div>
+      </div>
+      <div class="lesson-viewer">
+        <div class="lesson-meta">
+          <span class="lesson-duration" id="viewLessonDuration">60 minutes</span>
+          <span class="lesson-status" id="viewLessonStatus">Not Started</span>
+          <div class="slide-indicator">
+            <span id="slideCounter">1 / 1</span>
+          </div>
+        </div>
+        <div class="lesson-content-container">
+          <div class="lesson-content" id="viewLessonContent">
+            <!-- Lesson content will be displayed here -->
+          </div>
+        </div>
+        <div class="lesson-navigation">
+          <div class="slide-dots" id="slideDots">
+            <!-- Slide dots will be generated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal-overlay" id="profileModal">
+    <div class="modal profile-modal">
+      <div class="modal-header">
+        <h2>User Profile</h2>
+        <button class="close-btn" id="closeProfileModal">×</button>
+      </div>
+      <div class="profile-content">
+        <div class="profile-picture-section">
+          <div class="profile-picture" id="profilePicture">
+            <img id="profileImg" src="" alt="Profile" style="display: none;">
+            <div class="profile-placeholder" id="profilePlaceholder">
+              <span id="profileInitials">UN</span>
+            </div>
+          </div>
+          <button class="btn upload-btn" id="uploadPictureBtn">📷 Upload Picture</button>
+          <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+        </div>
+        
+        <form class="profile-form" id="profileForm">
+          <div class="field">
+            <label for="profileName">Full Name</label>
+            <input type="text" id="profileName" name="profileName" placeholder="Enter your full name">
+          </div>
+          <div class="field">
+            <label for="profileEmail">Email</label>
+            <input type="email" id="profileEmail" name="profileEmail" placeholder="Enter your email">
+          </div>
+          <div class="field">
+            <label for="profileRole">Role/Position</label>
+            <input type="text" id="profileRole" name="profileRole" placeholder="e.g., Teacher, Student, Instructor">
+          </div>
+          <div class="field">
+            <label for="profileBio">Bio</label>
+            <textarea id="profileBio" name="profileBio" placeholder="Tell us about yourself..."></textarea>
+          </div>
+          <div class="field">
+            <label for="profileInstitution">Institution/Organization</label>
+            <input type="text" id="profileInstitution" name="profileInstitution" placeholder="Enter your institution">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn cancel-btn" id="cancelProfile">Cancel</button>
+            <button type="submit" class="btn save-btn">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Import Progress Modal -->
+  <div class="modal-overlay" id="importProgressModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Importing Files</h2>
+      </div>
+      <div class="import-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">Processing files...</div>
+        <div class="file-list" id="fileList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+  <script src="lesson-manager.js"></script>
+</body>
+</html>

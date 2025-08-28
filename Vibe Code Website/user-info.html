@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Information Database</title>
+  <link rel="stylesheet" href="user-info.css">
+</head>
+<body>
+  <div class="bg"></div>
+  <main class="container">
+    <div class="header">
+      <div class="header-top">
+        <h1 class="title">User Database Information</h1>
+        <button class="logout-btn" id="logoutBtn">🚪 Logout</button>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <span class="stat-number" id="totalUsers">0</span>
+          <span class="stat-label">Total Users</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button class="btn refresh-btn" id="refreshBtn">🔄 Refresh Data</button>
+      <button class="btn export-btn" id="exportBtn">📋 Export to JSON</button>
+      <button class="btn clear-btn" id="clearBtn">🗑️ Clear Database</button>
+      <a href="index.html" class="btn back-btn">← Back to Login</a>
+    </div>
+
+    <div class="users-container">
+      <div class="users-header">
+        <h2>Registered Users</h2>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search users...">
+        </div>
+      </div>
+      
+      <div class="users-grid" id="usersGrid">
+        <!-- User cards will be inserted here -->
+      </div>
+      
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">👤</div>
+        <h3>No Users Found</h3>
+        <p>No users have been registered yet. Go to the login page to create an account.</p>
+        <a href="index.html" class="btn">Create Account</a>
+      </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="editModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Edit User</h2>
+          <button class="close-btn" id="closeEditModal">×</button>
+        </div>
+        <form class="edit-form" id="editForm">
+          <input type="hidden" id="editUserId">
+          <div class="field">
+            <label for="editUsername">Username</label>
+            <input type="text" id="editUsername" name="username" required>
+          </div>
+          <div class="field">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="email" required>
+          </div>
+          <div class="field">
+            <label for="editPassword">Password (leave blank to keep current)</label>
+            <input type="password" id="editPassword" name="password" placeholder="Enter new password or leave blank">
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn cancel-btn" id="cancelEdit">Cancel</button>
+            <button type="submit" class="btn save-btn">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Delete User</h2>
+          <button class="close-btn" id="closeDeleteModal">×</button>
+        </div>
+        <div class="delete-content">
+          <div class="warning-icon">⚠️</div>
+          <p>Are you sure you want to delete user <strong id="deleteUsername"></strong>?</p>
+          <p class="warning-text">This action cannot be undone.</p>
+          <div class="modal-actions">
+            <button type="button" class="btn cancel-btn" id="cancelDelete">Cancel</button>
+            <button type="button" class="btn delete-btn" id="confirmDelete">Delete User</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="user-info.js"></script>
+</body>
+</html>
